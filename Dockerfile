@@ -5,7 +5,7 @@ ENV LC_ALL C.UTF-8
 
 # note that we need to install a newer version of cmake through a pass
 RUN apt-get update --fix-missing
-RUN apt-get install -y --no-install-recommends llvm-11* clang-11* gdb git curl zsh tmux wget libxml2 libarchive13 autoconf vim pkg-config bison
+RUN apt-get install -y --no-install-recommends llvm-11* clang-11* gdb git curl zsh tmux wget libssl1.1 libxml2 libxml2-dev libarchive13 libarchive-dev libxslt1.1 libxslt1-dev xsltproc zlib1g zlib1g-dev libcurl4-openssl-dev autoconf vim pkg-config openjdk-11-jre-headless autoconf libtool bison
 
 RUN cp /usr/bin/llvm-profdata-11 /usr/bin/llvm-profdata && cp /usr/bin/llvm-cov-11 /usr/bin/llvm-cov && cp /usr/bin/clang-11 /usr/bin/clang
 
@@ -27,12 +27,8 @@ COPY . /StaticSlicer
 
 # BEAR
 RUN apt-get install -y bear
-# SRCML
-RUN arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) && \
-    dpkg -i /StaticSlicer/tools/libssl1.1.${arch}.deb
-# This won't work for arm64 - need to build from source
-RUN wget http://131.123.42.38/lmcrs/v1.0.0/srcml_1.0.0-1_ubuntu20.04.deb && \
-    dpkg -i srcml_1.0.0-1_ubuntu20.04.deb
+
+
 # RATS
 RUN git clone https://github.com/andrew-d/rough-auditing-tool-for-security
 WORKDIR /rough-auditing-tool-for-security
@@ -46,6 +42,26 @@ ENV LANG=C.UTF-8
 
 # Setup for test repos
 RUN apt-get install -y libevent-dev libssl-dev
+
+# SRCML
+#RUN arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) && \
+    #dpkg -i /StaticSlicer/tools/libssl1.1.${arch}.deb
+# This won't work for arm64 - need to build from source
+#RUN wget http://131.123.42.38/lmcrs/v1.0.0/srcml_1.0.0-1_ubuntu20.04.deb && \
+    #dpkg -i srcml_1.0.0-1_ubuntu20.04.deb
+
+# Modern CMake/Ninja for srcML (CMake >= 3.28)
+RUN python3 -m pip install --upgrade pip && \
+    pip3 install --no-cache-dir "cmake>=3.28" "ninja>=1.11"
+
+# -------- Build srcML from source --------
+RUN git clone --depth 1 https://github.com/srcML/srcML.git /tmp/srcml && \
+    cmake -S /tmp/srcml -B /tmp/srcml/build -G Ninja -DCMAKE_BUILD_TYPE=Release && \
+    ninja -C /tmp/srcml/build && \
+    ninja -C /tmp/srcml/build install && \
+    ldconfig && \
+    rm -rf /tmp/srcml
+# -----------------------------------------
 
 # openssl
 WORKDIR /StaticSlicer/test_lib/openssl
