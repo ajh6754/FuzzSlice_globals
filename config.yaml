@@ -7,3 +7,6 @@ max_length_fuzz_bytes: 15000
 parallel_execution: false
 crash_limit: 1000
 log_report: true
+mutate_globals: true
+global_mutation_budget_bytes: 64
+global_pointer_mode: null-or-static

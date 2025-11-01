@@ -1,6 +1,6 @@
 from loguru import logger
 
-from expand_var import expand_struct, reset_param_globals, register_initial_paramnames
+from expand_var import expand_struct, reset_param_globals, register_initial_paramnames, discover_globals, gen_mutation_for_global
 
 # compiler_flags_libFuzzer = "-ferror-limit=1 -g -O0 -fsanitize=address,undefined,fuzzer -fprofile-instr-generate -fcoverage-mapping"
 # compiler_flags_aflplusplus = "-ferror-limit=1 -g -O0 -fsanitize=address,undefined -fprofile-instr-generate -fcoverage-mapping"
@@ -40,6 +40,7 @@ class Generator:
         self.target_type = target_type
         self.var_function = 0
         self.var_files = 0
+        self.globals = []
 
     # def gen_header(self):
     #     defaults = ["stdio.h", "stddef.h", "stdlib.h", "string.h", "stdint.h"]
@@ -485,6 +486,12 @@ class Generator:
             param_list.append(arg["parameter"])
         register_initial_paramnames(file, param_list)
 
+        # Discover file-scope globals for this translation unit (best-effort)
+        try:
+            self.globals = discover_globals(file)
+        except Exception:
+            self.globals = []
+
     def gen_target_function(self, func, param_id) -> list:
 
         malloc_free = [
@@ -547,6 +554,25 @@ class Generator:
                 f.append("    uint8_t * pos = Fuzz_Data;\n")
                 for line in self.gen_func_params:
                     f.append("    " + line)
+
+                
+                # --- GLOBAL STATE: snapshot, restore, and mutate ---
+                if len(self.globals) > 0:
+                    f.append("    // GLOBALS — initialize snapshot and restore baseline\n")
+                    f.append("    static int __fs_globals_init = 0;\n")
+                    for g in self.globals:
+                        f.append(f"    static {g['type']} __fs_saved_{g['name']};\n")
+                    f.append("    if (!__fs_globals_init) {\n")
+                    for g in self.globals:
+                        f.append(f"        __fs_saved_{g['name']} = {g['name']};\n")
+                    f.append("        __fs_globals_init = 1;\n")
+                    f.append("    }\n")
+                    for g in self.globals:
+                        f.append(f"    {g['name']} = __fs_saved_{g['name']};\n")
+                    f.append("    // mutate globals using fuzz bytes\n")
+                    for g in self.globals:
+                        for __line in gen_mutation_for_global(g):
+                            f.append("    " + __line + "\n")
 
                 f.append("    //FUNCTION_CALL\n")
                 if func["return_type"] in malloc_free:

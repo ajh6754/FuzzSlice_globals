@@ -867,3 +867,30 @@ class Srcml:
         #     node.text = ""
         #     node.append(node_xml)
         self.save(xml_location, False)
+
+# --- Helper: list top-level decls for a specific filename ---------------------
+def get_global_var_decls_for_file(xml_loc: str, filename: str):
+    # Build a Srcml tree for xml_loc and return [{'name','type'}] at file scope for that filename.
+    try:
+        lib = Srcml(xml_loc)
+    except Exception:
+        return []
+    decls = []
+    units = lib.nxml(f"./src:unit[@filename='{filename}']")
+    if not units:
+        import os as _os
+        bn = _os.path.basename(filename)
+        for unit in lib.nxml("./src:unit"):
+            fn = unit.attrib.get("filename","")
+            if _os.path.basename(fn) == bn:
+                units.append(unit)
+    for unit in units:
+        for node in unit.xpath("./src:decl", namespaces=ns):
+            try:
+                name = get_name(node)
+                tp = get_type(node, "")
+                if name and tp and "(" not in name:
+                    decls.append({"name": name.strip(), "type": tp.strip()})
+            except Exception:
+                continue
+    return decls

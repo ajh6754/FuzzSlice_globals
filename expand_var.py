@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import xml.etree.ElementTree as ET
 import numpy as np
+from typing import List, Dict
 
 from lxml import etree
 
@@ -795,3 +796,92 @@ def expand_struct(file, parameters, compile_command, link_command):
         "gen_free": free_line,
     }
     return dyn_size, buf_size, curr_gen
+
+# --- Global discovery and mutation helpers ------------------------------------
+def discover_globals(file_path: str) -> List[dict]:
+    # Best-effort: extract file-scope variable decls using srcML for just this file.
+    import subprocess, os
+    from lxml import etree as et
+    from srcml import get_name, get_type, ns  # reuse helpers
+    tmp_xml = file_path + ".srcml.xml"
+    try:
+        subprocess.run(["srcml", file_path, "--position", "-o", tmp_xml],
+                       check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    except Exception:
+        return []
+    decls = []
+    try:
+        tree = et.parse(tmp_xml)
+        root = tree.getroot()
+        # collect top-level decl nodes in any unit for this filename
+        import os
+        bn = os.path.basename(file_path)
+        units = root.xpath("//src:unit", namespaces=ns)
+        for unit in units:
+            fname = unit.attrib.get("filename","")
+            if not fname:
+                continue
+            if (fname == file_path) or (os.path.basename(fname) == bn):
+                for node in unit.xpath("./src:decl", namespaces=ns):
+                    try:
+                        n = get_name(node)
+                        t = get_type(node, "")
+                        if n and t and "(" not in n:
+                            if any(bad in t for bad in disallowed_names):
+                                continue
+                            decls.append({"name": n.strip(), "type": t.strip()})
+                    except Exception:
+                        continue
+        return decls
+    finally:
+        try:
+            os.remove(tmp_xml)
+        except Exception:
+            pass
+
+
+def gen_mutation_for_global(g: dict) -> list:
+    # Emit C statements (strings) that mutate a global using fuzz bytes.
+    # Assumes in-scope: uint8_t *Fuzz_Data; int Fuzz_Size; uint8_t *pos;
+    name = g.get("name","")
+    tp = g.get("type","")
+    base = tp.replace("const", "").replace("volatile", "").strip()
+    lines = []
+    if "*" in base:
+        lines += [
+            f"/* mutate pointer {name}: set NULL half the time */",
+            "if ((pos < Fuzz_Data + Fuzz_Size) && (*pos & 1)) {",
+            f"    {name} = NULL;",
+            "}",
+        ]
+        return lines
+    lower = base.lower()
+    if any(k in lower for k in ["int", "short", "long", "enum", "uint", "size_t", "intptr", "uintptr"]):
+        lines += [
+            f"/* mutate integer-like global {name} */",
+            "if (pos + 4 <= Fuzz_Data + Fuzz_Size) {",
+            "    int32_t __v = 0;",
+            "    memcpy(&__v, pos, 4);",
+            "    pos += 4;",
+            f"    {name} = ({base})__v;",
+            "}",
+        ]
+    elif "bool" in lower:
+        lines += [
+            f"/* mutate bool global {name} */",
+            "if (pos < Fuzz_Data + Fuzz_Size) {",
+            f"    {name} = (*pos & 1);",
+            "    pos += 1;",
+            "}",
+        ]
+    elif "char" in lower:
+        lines += [
+            f"/* mutate char-like global {name} */",
+            "if (pos < Fuzz_Data + Fuzz_Size) {",
+            f"    {name} = ({base})*pos;",
+            "    pos += 1;",
+            "}",
+        ]
+    else:
+        lines += [f"/* skipping unsupported global type for {name}: {base} */"]
+    return lines
