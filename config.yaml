@@ -1,4 +1,4 @@
-test_library: C
+test_library: tmux
 fuzz_tool: 0
 bug_timeline_targets_run: false
 timeout: 10
