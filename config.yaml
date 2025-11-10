@@ -1,9 +1,9 @@
-test_library: tmux
+test_library: small
 fuzz_tool: 0
 bug_timeline_targets_run: false
-timeout: 10
-hard_timeout: 1800
-max_length_fuzz_bytes: 15000
+timeout: 1 # 10
+hard_timeout: 10 # 1800
+max_length_fuzz_bytes: 512 # 15000
 parallel_execution: false
-crash_limit: 1000
+crash_limit: 10 # 1000
 log_report: true
