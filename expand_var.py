@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import xml.etree.ElementTree as ET
 import numpy as np
+import pdb
 
 from lxml import etree
 
@@ -747,7 +748,7 @@ def register_initial_paramnames(file, initial_params):
     tmp_dir = prepare_directory(file)
     get_name(initial_params)
 
-
+# could not get params for just main() here, but that might just mean the locals are somewhere else
 def expand_struct(file, parameters, compile_command, link_command):
     if parameters[0].strip() == "void":
         return (

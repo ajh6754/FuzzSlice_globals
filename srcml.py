@@ -4,6 +4,8 @@ from collections import defaultdict
 import typing
 from functools import total_ordering
 from typing import Set
+import globals
+import pdb
 
 import clang.cindex
 from loguru import logger
@@ -535,8 +537,8 @@ class Srcml:
                         # global variables are NOT functions. Add to dedicated global list
                         # no need to worry about func pointers
                         if(not is_function):
-                            # assign globals to self.global_vars, no need for value- just type
-                            self.global_vars[func_name] = ftype                       
+                            # append total globals from globals.py
+                            globals.globals[func_name] = ftype                       
                             continue
 
                         if self.decl_info[file_name].get(func_name, None):
