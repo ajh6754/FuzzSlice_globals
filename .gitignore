@@ -12,7 +12,10 @@ test_lib/openssh-portable
 *.o
 /out.log
 *.pyc
-info_lib/*
+info_lib/C
+info_lib/openssh-portable
+info_lib/openssl
+info_lib/tmux
 fuzz/*
 *.profraw
 build_logs
