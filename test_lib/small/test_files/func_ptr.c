@@ -18,7 +18,7 @@ int hello()
 
 /// MAIN FUNCTION
 
-int main()
+int main(int argc, char *argv[])
 {
     int (*ptr) () = &hello;
     int dummy = 0;

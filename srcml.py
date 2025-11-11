@@ -538,7 +538,8 @@ class Srcml:
                         # no need to worry about func pointers
                         if(not is_function):
                             # append total globals from globals.py
-                            globals.globals[func_name] = ftype                       
+                            #globals.globals.append(f"{ftype} {func_name}")     
+                            globals.globals[func_name] = ftype             
                             continue
 
                         if self.decl_info[file_name].get(func_name, None):

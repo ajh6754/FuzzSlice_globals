@@ -22,7 +22,7 @@ from build_log_parser import BuildLog
 
 from fuzz import Fuzzer
 from fuzz_gen import Generator
-from srcml import Srcml, get_name
+from srcml import DataType, Srcml, get_name
 
 with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
@@ -531,6 +531,9 @@ def minimize_target(lib_src, issue):
     change_include(issue.test_file_path, loc_name)
     if line:
         # fix_ifdefs(issue.test_file_path, func["func_name"])
+            
+        # add globals to the func
+        globals.add_global_params(func)
         add_temp_main(issue, func)
         concat_locations = handle_missing_links(issue, lib_src)
     return func, concat_locations
@@ -666,6 +669,10 @@ def analyze(srcml: Srcml, issues):
                 # Switch the compiler to afl-clang
                 # cc = "gcc -fsanitize=address,undefined -fprofile-arcs -ftest-coverage"
                 # concat_locations = construct_concat_locations(issue)
+                
+                # add globals to the func
+                #globals.add_global_params(func)
+                
                 add_main(issue, func, concat_locations)
 
                 if os.path.exists(issue.test_file_path[:-2] + ".out"):
@@ -694,6 +701,10 @@ def analyze(srcml: Srcml, issues):
                 func, concat_locations = minimize_target(srcml, issue)
                 if func is None:
                     continue
+                
+                # add globals to the func
+                #globals.add_global_params(func)
+                
                 remove_binary(issue)
                 # concat_locations = construct_concat_locations(issue)
                 add_main(issue, func, concat_locations)
