@@ -9,7 +9,7 @@ CC = clang
 CFLAGS = -g -O2 -Wall
 LDFLAGS = -lpthread
 TARGET = small_exe
-SRC = ../test_files/small.c
+SRC = ../test_files/func_ptr.c
 
 .PHONY: all clean
 

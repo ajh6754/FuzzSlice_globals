@@ -470,6 +470,7 @@ class Srcml:
         self.decl_info = {}
         self.xml = self.parse_xml().getroot()
         self.typed_elements = {}
+        self.global_vars = {} # explicitly save global vars and their type
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -490,6 +491,7 @@ class Srcml:
     def nxml(self, nxpath):
         return self.xml.xpath(nxpath, namespaces=ns)
 
+    # future change: This obtains global variables too. 
     def get_all_defined_functions_and_range(self):
         for file in self.nxml("./src:unit"):
             file_name = file.attrib["filename"]
@@ -529,6 +531,14 @@ class Srcml:
                     else:
                         ftype = get_type(node, func_name)
                     if func_name and ftype:
+                        # global variables and functions get here, but nothing else. need to fix this
+                        # global variables are NOT functions. Add to dedicated global list
+                        # no need to worry about func pointers
+                        if(not is_function):
+                            # assign globals to self.global_vars, no need for value- just type
+                            self.global_vars[func_name] = ftype                       
+                            continue
+
                         if self.decl_info[file_name].get(func_name, None):
                             self.decl_info[file_name][func_name] = Function(
                                 node,
