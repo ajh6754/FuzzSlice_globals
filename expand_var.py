@@ -6,6 +6,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 import numpy as np
 import pdb
+import globals
 
 from lxml import etree
 
@@ -88,15 +89,16 @@ def add_assignment(file, parameters, vars, types):
     # text = open( file ).read()
 
     # text = text + "\nint main() { \n"
-
-    for i, v in enumerate(vars):
-        line = "\n \t" + types[i] + " "
-        num_pointers = is_pointer[vars[i]]
-        for j in range(num_pointers):
-            line = line + "*"
-        line = line + vars[i] + ";"
-        # text = text + line
-        lines += [line]
+    # CHANGE: do not declare globals again
+    if(vars[0] not in globals.globals.keys()):
+        for i, v in enumerate(vars):
+            line = "\n \t" + types[i] + " "
+            num_pointers = is_pointer[vars[i]]
+            for j in range(num_pointers):
+                line = line + "*"
+            line = line + vars[i] + ";"
+            # text = text + line
+            lines += [line]
 
     for i, p in enumerate(parameters):
         parentvar = vars[i]
@@ -765,6 +767,11 @@ def expand_struct(file, parameters, compile_command, link_command):
         new_params = []
         types, vars, pointers = get_name(parameters)
         dyn_size, buf_size, lines = add_dummy_parameter(vars, types)
+        
+        # CHANGE: lines = nothing if global
+        if(vars[0] in globals.globals.keys()):
+            lines = []
+        
         curr_gen = {
             "gen_lines": ["//GEN_STRUCT\n"] + lines,
             "gen_free": [],

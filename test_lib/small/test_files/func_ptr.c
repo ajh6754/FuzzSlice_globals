@@ -14,6 +14,7 @@ int global_var = 67;
 int hello()
 {
     int i = 0;
+    return i;
 }
 
 /// MAIN FUNCTION

@@ -301,7 +301,7 @@ def add_main(issue, func, concat_locations):
         f.writelines("\n" + s for s in lines)
     linker_checks(issue, concat_locations, final=True)
 
-
+# CHANGE: remove globals as parameters HERE
 def add_temp_main(issue, func):
     f = issue.test_file_path
     main_gen = Generator(target_type=fuzz_tool)
@@ -531,9 +531,6 @@ def minimize_target(lib_src, issue):
     change_include(issue.test_file_path, loc_name)
     if line:
         # fix_ifdefs(issue.test_file_path, func["func_name"])
-            
-        # add globals to the func
-        globals.add_global_params(func)
         add_temp_main(issue, func)
         concat_locations = handle_missing_links(issue, lib_src)
     return func, concat_locations

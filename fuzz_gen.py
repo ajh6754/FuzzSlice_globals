@@ -1,4 +1,6 @@
 from loguru import logger
+from globals import globals
+import pdb
 
 from expand_var import expand_struct, reset_param_globals, register_initial_paramnames
 
@@ -49,12 +51,18 @@ class Generator:
 
     #     return include_lines
 
+    # CHANGE: detect for globals, change whether type and name are declared in fuzzing harness
     def gen_builtin(self, type_name, var_name):
+        # create dummy type
+        declaration = type_name + " " + var_name + ";\n"
+        
+        if(var_name in globals.keys() and globals[var_name] == type_name):
+            declaration = ""
 
         return {
             "gen_lines": [
                 "//GEN_BUILTIN\n",
-                type_name + " " + var_name + ";\n",
+                declaration,
                 "memcpy(&" + var_name + ", pos, sizeof(" + type_name + "));\n",
                 "pos += sizeof(" + type_name + ");\n",
             ],
@@ -485,7 +493,8 @@ class Generator:
             param_list.append(arg["parameter"])
         register_initial_paramnames(file, param_list)
 
-    def gen_target_function(self, func, param_id) -> list:
+    # CHANGE: added "is_global" bool to add the GEN_STRUCT however do not put the var type ANYWHERE
+    def gen_target_function(self, func, param_id, do_global=False) -> list: 
 
         malloc_free = [
             "unsigned char *",
@@ -545,6 +554,9 @@ class Generator:
                         f.append(") return 0;\n")
 
                 f.append("    uint8_t * pos = Fuzz_Data;\n")
+                
+                # CHANGE: for some reason despite our best efforts int global_var; comes back like the bastard it is
+                #breakpoint()
                 for line in self.gen_func_params:
                     f.append("    " + line)
 
@@ -562,9 +574,11 @@ class Generator:
 
                 param_list = []
                 for arg in func["params"]:
+                    # CHANGE: don't add global as a param
                     if arg["param_name"].strip() == "void":
                         arg["param_name"] = ""
-                    param_list.append(arg["param_name"] + " ")
+                    if (arg["param_name"].strip() not in globals.keys()):
+                        param_list.append(arg["param_name"] + " ")
                 f.append(",".join(param_list))
                 f.append(");\n")
 

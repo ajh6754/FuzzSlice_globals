@@ -312,6 +312,9 @@ def filter_node_list_by_node_kind(
 
 
 def construct_params(name, file_name, srcmlparams):
+    # append globals to the srcmlparams
+    globals.add_global_params(srcmlparams)
+    
     parameters = []
     if name == "_original_main":
         name = "_main"
@@ -330,6 +333,12 @@ def construct_params(name, file_name, srcmlparams):
         # Do not allow variable argument to be counted as argument
         if srcmlparams[i]["parameter"].split(";")[0] == "...":
             continue
+        
+        # add check for GLOBALS
+        is_global = False
+        if(srcmlparams[i]["param_name"] in globals.globals.keys()):
+            is_global = True
+        
         parameters.append(
             {
                 "parameter": srcmlparams[i]["parameter"].split(";")[0],
@@ -338,6 +347,7 @@ def construct_params(name, file_name, srcmlparams):
                 "function_ptr": srcmlparams[i]["function_ptr"],
                 "generator_type": DataType.UNKNOWN,
                 "param_usage": "UNKNOWN",
+                "is_global": is_global
             }
         )
     return parameters

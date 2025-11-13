@@ -1,1 +1,1 @@
-./test_lib/small/test_files/func_ptr.c:29: High: strcpy
+./test_lib/small/test_files/func_ptr.c:30: High: strcpy
