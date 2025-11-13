@@ -667,9 +667,6 @@ def analyze(srcml: Srcml, issues):
                 # cc = "gcc -fsanitize=address,undefined -fprofile-arcs -ftest-coverage"
                 # concat_locations = construct_concat_locations(issue)
                 
-                # add globals to the func
-                #globals.add_global_params(func)
-                
                 add_main(issue, func, concat_locations)
 
                 if os.path.exists(issue.test_file_path[:-2] + ".out"):
@@ -698,9 +695,6 @@ def analyze(srcml: Srcml, issues):
                 func, concat_locations = minimize_target(srcml, issue)
                 if func is None:
                     continue
-                
-                # add globals to the func
-                #globals.add_global_params(func)
                 
                 remove_binary(issue)
                 # concat_locations = construct_concat_locations(issue)
