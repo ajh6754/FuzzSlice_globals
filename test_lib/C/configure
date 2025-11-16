@@ -6,6 +6,8 @@ echo "Running configure and building project..."
 
 cp -r ../testcases .
 
+cp -r ../testcasesupport .
+
 # copy makefile into build_ss
 
 cp -r ../Makefile .
