@@ -1,5 +1,7 @@
 TARGET=Juliet1.3
 
+MAKEFLAGS += -j16
+
 # Bins
 MAKE=make
 CPP=g++

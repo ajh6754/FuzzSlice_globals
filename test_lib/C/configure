@@ -18,4 +18,3 @@ ln -sf $JTS/testcasesupport testcasesupport
 
 cp -r ../Makefile .
 
-

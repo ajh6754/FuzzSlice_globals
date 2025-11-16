@@ -1,6 +1,4 @@
 /// filename: func_ptr.c
-/// 
-/// Purpose: to test func pointers getting broken tbh
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,7 +8,7 @@
 
 int global_var = 67;
 
-/// func ptr example ig
+/// func ptr example
 int hello()
 {
     int i = 0;
@@ -30,13 +28,6 @@ int main(int argc, char *argv[])
         strcpy(buffer, input);
     }
 
-    ///if(dummy == 0)
-    ///{
-        ///char input[6] = "Hello";
-        ///char buffer[1];
-        ///strcpy(buffer, input);
-    ///}
-    ///./test_lib/small/test_files/func_ptr.c:29: High: strcpy
-
     return 0;
 }
+
