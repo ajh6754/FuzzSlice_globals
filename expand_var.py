@@ -86,11 +86,15 @@ def add_assignment(file, parameters, vars, types):
     dyn_size = 0
     buf_size = []
     free_line = []
+    
+    # CHANGE: obtain globals
+    global_vars = globals.get_globals()
+    
     # text = open( file ).read()
 
     # text = text + "\nint main() { \n"
     # CHANGE: do not declare globals again
-    if(vars[0] not in globals.globals.keys()):
+    if(vars[0] not in global_vars.keys()):
         for i, v in enumerate(vars):
             line = "\n \t" + types[i] + " "
             num_pointers = is_pointer[vars[i]]
@@ -763,13 +767,17 @@ def expand_struct(file, parameters, compile_command, link_command):
         )
     new_params = parameters
     counting = 0
+    
+    # CHANGE: get globals dictionary
+    global_vars = globals.get_globals()
+    
     if compile_command == [] and link_command == []:
         new_params = []
         types, vars, pointers = get_name(parameters)
         dyn_size, buf_size, lines = add_dummy_parameter(vars, types)
         
         # CHANGE: lines = nothing if global
-        if(vars[0] in globals.globals.keys()):
+        if(vars[0] in global_vars.keys()):
             lines = []
         
         curr_gen = {

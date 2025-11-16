@@ -6,16 +6,46 @@
 
 from srcml import DataType
 
-# global to hold all globals, accessible outside this file
+# global to hold globals per file. dictionary of dictionaries
+# format: {name : type}
 globals = {}
 
-# format: type : name
+def get_globals():
+    """simple getter for dictionary, so globals aren't across files
+    """
+    return globals
 
-def add_global_params(srcmlparams):
+def record_global(name, type):
+    """records global in the dictionary of dictionaries
+    """
+    globals[name] = type
+    return
+
+def add_global_params(filename, srcmlparams):
+    """adds the appropriate global params for the specific issue/file
+    
+    NOTE: a bit of a flawed method. Could be error prone but in good code
+          it wouldn't really be an issue? Comments are not saved so the 
+          mention of the name of the global will not be a problem outside
+          the specific circumstance where the name is defined locally
+    """
+    # initialize file_globals
+    file_globals = {}
+    
+    # open the file, see if ANY mention of global vars
+    with open(filename, "r") as f:
+        # get the entirety of the file
+        code = f.read()
+        
+        # for every global, check that it's in there
+        for global_var in globals:
+            if(global_var in code):
+                file_globals[global_var] = globals[global_var]
+    
     # append globals to func
-    for global_var in globals:
+    for global_var in file_globals.keys():
         # get important info
-        glob_type = globals[global_var]
+        glob_type = file_globals[global_var]
         
         # create dict for parameters
         glob_param = {
@@ -27,23 +57,5 @@ def add_global_params(srcmlparams):
         
         # add to param_list
         srcmlparams.append(glob_param)
-
-    # reset the globals (might not need this)
-    #globals.reset_globals()
-
-def create_globals_file(file_name):
-    """ creates a json file to record all globals in project
-    """
-    return None
-
-def check_globals_for_issue(file_name):
-    """ accesses the (xml? c?) file to pick the proper globals for 
-        the specific issue
-    """
-    return None
-
-# reset globals function, might be used might not
-def reset_globals():
-    globals = {}
 
 

@@ -3,31 +3,10 @@
 
 echo "Running configure and building project..."
 
-# Generate a simple Makefile if it doesn't exist
-cat > Makefile << 'EOF'
-CC = clang
-CFLAGS = -g -O2 -Wall
-LDFLAGS = -lpthread
-TARGET = small_exe
-SRC = ../test_files/func_ptr.c
-
-.PHONY: all clean
-
-all: $(TARGET)
-
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
-
-clean:
-	rm -f $(TARGET) *.o
-EOF
-
-# Run make immediately
-#make
-
 # copy test_files into build_ss
 
 cp -r ../test_files .
 
+cp -r ../Makefile .
 
 echo "Configuration and build complete."

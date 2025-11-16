@@ -1,10 +1,10 @@
-# Minimal Makefile for small.c
+# Minimal Makefile for the small c files
 
-TARGET = small_exe
-SRC = small.c
 CC = clang
-CFLAGS = -O2 -g -Wall
+CFLAGS = -g -O2 -Wall
 LDFLAGS = -lpthread
+TARGET = small_exe
+SRC = ../test_files/func_ptr.c
 
 .PHONY: all clean
 

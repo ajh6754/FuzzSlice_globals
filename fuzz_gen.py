@@ -1,5 +1,5 @@
 from loguru import logger
-from globals import globals
+import globals
 import pdb
 
 from expand_var import expand_struct, reset_param_globals, register_initial_paramnames
@@ -56,7 +56,10 @@ class Generator:
         # create dummy type
         declaration = type_name + " " + var_name + ";\n"
         
-        if(var_name in globals.keys() and globals[var_name] == type_name):
+        # get globals
+        global_vars = globals.get_globals()
+        
+        if(var_name in global_vars.keys() and global_vars[var_name] == type_name):
             declaration = ""
 
         return {
@@ -495,6 +498,8 @@ class Generator:
 
     # CHANGE: added "is_global" bool to add the GEN_STRUCT however do not put the var type ANYWHERE
     def gen_target_function(self, func, param_id, do_global=False) -> list: 
+        # get globals
+        global_vars = globals.get_globals()
 
         malloc_free = [
             "unsigned char *",
@@ -576,7 +581,7 @@ class Generator:
                         arg["param_name"] = ""
                         
                     # CHANGE: don't add global as a param
-                    if (arg["param_name"].strip() not in globals.keys()):
+                    if (arg["param_name"].strip() not in global_vars.keys()):
                         param_list.append(arg["param_name"] + " ")
                 f.append(",".join(param_list))
                 f.append(");\n")

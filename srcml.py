@@ -311,9 +311,12 @@ def filter_node_list_by_node_kind(
     return result
 
 
-def construct_params(name, file_name, srcmlparams):
+def construct_params(name, file_name, srcmlparams):    
     # append globals to the srcmlparams
-    globals.add_global_params(srcmlparams)
+    globals.add_global_params(file_name, srcmlparams)
+    
+    # get globals
+    global_vars = globals.get_globals()
     
     parameters = []
     if name == "_original_main":
@@ -336,7 +339,7 @@ def construct_params(name, file_name, srcmlparams):
         
         # add check for GLOBALS
         is_global = False
-        if(srcmlparams[i]["param_name"] in globals.globals.keys()):
+        if(srcmlparams[i]["param_name"] in global_vars.keys()):
             is_global = True
         
         parameters.append(
@@ -548,8 +551,7 @@ class Srcml:
                         # no need to worry about func pointers
                         if(not is_function):
                             # append total globals from globals.py
-                            #globals.globals.append(f"{ftype} {func_name}")     
-                            globals.globals[func_name] = ftype             
+                            globals.record_global(func_name, ftype)           
                             continue
 
                         if self.decl_info[file_name].get(func_name, None):
