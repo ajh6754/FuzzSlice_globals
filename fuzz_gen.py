@@ -555,8 +555,6 @@ class Generator:
 
                 f.append("    uint8_t * pos = Fuzz_Data;\n")
                 
-                # CHANGE: for some reason despite our best efforts int global_var; comes back like the bastard it is
-                #breakpoint()
                 for line in self.gen_func_params:
                     f.append("    " + line)
 
@@ -574,9 +572,10 @@ class Generator:
 
                 param_list = []
                 for arg in func["params"]:
-                    # CHANGE: don't add global as a param
                     if arg["param_name"].strip() == "void":
                         arg["param_name"] = ""
+                        
+                    # CHANGE: don't add global as a param
                     if (arg["param_name"].strip() not in globals.keys()):
                         param_list.append(arg["param_name"] + " ")
                 f.append(",".join(param_list))

@@ -5,7 +5,7 @@ venv/
 *.xml
 *.xml_fixed
 workspace/
-test_lib/C
+
 test_lib/openssl
 test_lib/tmux
 test_lib/openssh-portable

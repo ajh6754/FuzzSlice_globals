@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Dummy configure that also builds the project
+echo "Running configure and building project..."
+
+# copy test_files into build_ss
+
+cp -r ../testcases .
+
+# copy makefile into build_ss
+
+cp -r ../Makefile .
+
+echo "Configuration and build complete."
