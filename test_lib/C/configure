@@ -2,14 +2,20 @@
 # Dummy configure that also builds the project
 echo "Running configure and building project..."
 
+# Absolute path to Juliet inside the container
+JTS=/StaticSlicer/test_lib/C/
+
+ln -sf $JTS/testcases testcases
+ln -sf $JTS/testcasesupport testcasesupport
+
 # copy test_files into build_ss
 
-cp -r ../testcases .
+#cp -r ../testcases .
 
-cp -r ../testcasesupport .
+#cp -r ../testcasesupport .
 
 # copy makefile into build_ss
 
 cp -r ../Makefile .
 
-echo "Configuration and build complete."
+
