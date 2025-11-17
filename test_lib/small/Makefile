@@ -4,7 +4,7 @@ MAKEFLAGS += -j16
 
 # Bins
 MAKE=make
-CC=gcc
+CC=clang
 CFLAGS=-g -Wall
 LFLAGS=
 
@@ -17,20 +17,21 @@ INDIVIDUALS := $(patsubst %Makefile,%individuals,$(MAKE_FILES))
 TEST_DIRS := $(wildcard test_files/*)
 
 # Create executables named after the folder
-PROGRAMS := $(TEST_DIRS:%=%/exe)
+# Example: test_files/05_extern --> test_files/05_extern/05_extern
+PROGRAMS := $(TEST_DIRS:%=%/%)
 
 # Build all
 all: $(PROGRAMS)
 
-# Rule: build one executable per folder
-# e.g., test_files/05_extern -> test_files/05_extern/exe
-%/exe:
+# Fix: build binary with the SAME NAME as the directory
+# $(@D) gives the folder, so basename gives folder name.
+%/%:
 	@echo "Building executable in $(@D)..."
 	$(CC) $(CFLAGS) -o $@ $(wildcard $(@D)/*.c) $(LFLAGS)
 
-# Clean all executables
+# Clean everything
 clean:
-	find test_files -type f -name 'exe' -delete
+	find test_files -type f -executable -delete
 	find test_files -type f -name '*.o' -delete
 
 .PHONY: all clean

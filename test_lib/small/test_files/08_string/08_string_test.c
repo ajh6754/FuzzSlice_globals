@@ -14,7 +14,7 @@ char * global_var = "67";
 
 int main()
 {
-    if(global_var == "10")
+    if(strcmp(global_var, "10") == 0)
     {
         char input[6] = "Hello";
         char buffer[1];

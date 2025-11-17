@@ -39,7 +39,9 @@ def add_global_params(filename, srcmlparams):
         
         # for every global, check that it's in there
         for global_var in globals:
-            if(global_var in code):
+            glob_string = f"{globals[global_var]} {global_var}"
+            
+            if(glob_string in code):
                 file_globals[global_var] = globals[global_var]
     
     # append globals to func

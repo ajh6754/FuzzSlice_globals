@@ -10,10 +10,12 @@ struct structure {
   int dummy;
 };
 
+struct structure test = {10};
+
 /// ERROR FUNCTION
-int error(struct structure p)
+int error()
 {
-    if(p.dummy == 10)
+    if(test.dummy == 10)
     {
         char input[6] = "Hello";
         char buffer[1];
@@ -26,10 +28,7 @@ int error(struct structure p)
 /// MAIN FUNCTION
 
 int main() {
-    struct structure test;
-    test.dummy = 10;
-
-    error(test);
+    error();
 
     return 0;
 }

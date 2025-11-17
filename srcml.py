@@ -546,10 +546,17 @@ class Srcml:
                     else:
                         ftype = get_type(node, func_name)
                     if func_name and ftype:
-                        # global variables and functions get here, but nothing else. need to fix this
-                        # global variables are NOT functions. Add to dedicated global list
-                        # no need to worry about func pointers
-                        if(not is_function):
+                        # global variables functions, structs, etc get here
+                        # ensure only globals are recorded. Ignore struct declarations
+                        # static glboals get ignored
+                        if(not is_function and "const" not in ftype
+                            and len(func_name.split(" ")) == 1):
+                            
+                            # if this is a struct, ensure the entire type is considered
+                            # for typedef structs, this messes up- does "struct type"
+                            if("struct" in ftype and len(ftype.split(" ")) == 1):
+                                continue
+                            
                             # append total globals from globals.py
                             globals.record_global(func_name, ftype)           
                             continue

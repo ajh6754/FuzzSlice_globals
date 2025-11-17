@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <extern_struct.c>
+#include "07_extern_struct.h"
 
 /// MAIN FUNCTION
 

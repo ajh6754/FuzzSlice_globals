@@ -1,16 +1,15 @@
 /// filename: main.c
 ///
-/// should yield a crash with an extern
+/// should NOT crash
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <05_def.c>
 
 /// MAIN FUNCTION
 
 int main() {
-    extern int global_var_extern;
+    extern const int global_var_extern;
 
     if(global_var_extern == 10)
     {

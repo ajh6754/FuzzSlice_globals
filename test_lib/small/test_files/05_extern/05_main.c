@@ -1,11 +1,10 @@
 /// filename: main.c
 ///
-/// should NOT crash
+/// should yield a crash with an extern
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <11_def.c>
 
 /// MAIN FUNCTION
 

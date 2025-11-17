@@ -1,7 +1,4 @@
 /// filename: extern_struct.c
-
-struct structure {
-  int dummy;
-};
+#include "07_extern_struct.h"
 
 struct structure test = {10};

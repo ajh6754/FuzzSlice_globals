@@ -8,5 +8,3 @@ echo "Running configure and building project..."
 cp -r ../test_files .
 
 cp -r ../Makefile .
-
-echo "Configuration and build complete."
