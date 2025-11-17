@@ -17,7 +17,7 @@ int error(int dummy)
     {
         char input[6] = "Hello";
         char buffer[1];
-        strcpy(buffer, input); /// ./test_lib/small/test_files/main.c:22: High: strcpy
+        strcpy(buffer, input);
     }
 
     return 1;
