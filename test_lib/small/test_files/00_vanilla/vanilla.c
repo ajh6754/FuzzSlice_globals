@@ -9,12 +9,11 @@
 /// MAIN FUNCTION
 int main(int argc, char * argv[])
 {
-    int dummy = 0;
-    if(dummy == 0)
+    if(argc == 2)
     {
         char input[6] = "Hello";
         char buffer[1];
-        strcpy(buffer, input); 
+        strcpy(buffer, input); /// error here
     }
 
     return 0;

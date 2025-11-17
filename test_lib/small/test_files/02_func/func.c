@@ -1,4 +1,6 @@
-/// filename: func_ptr.c
+/// filename: func.c
+/// 
+/// Purpose: demontrate global variabe fuzzing within a function
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,26 +10,21 @@
 
 int global_var = 67;
 
-/// func ptr example
+/// ERROR FUNCTION
 int error(int dummy)
 {
     if(dummy == 0 && global_var == 10)
     {
         char input[6] = "Hello";
         char buffer[1];
-        strcpy(buffer, input); /// error here
+        strcpy(buffer, input); /// ./test_lib/small/test_files/main.c:22: High: strcpy
     }
-    return 1;
 }
 
 /// MAIN FUNCTION
 
-int main(int argc, char *argv[])
+int main()
 {
-    int (*ptr) (int) = &error;
-
-    ptr(0);
-
+    error(0);
     return 0;
 }
-
