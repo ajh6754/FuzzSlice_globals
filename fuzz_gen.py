@@ -53,6 +53,8 @@ class Generator:
 
     # CHANGE: detect for globals, change whether type and name are declared in fuzzing harness
     def gen_builtin(self, type_name, var_name):
+        global_vars = globals.get_globals()
+        
         # create dummy type
         declaration = type_name + " " + var_name + ";\n"
         
@@ -577,7 +579,7 @@ class Generator:
                     if arg["param_name"].strip() == "void":
                         arg["param_name"] = ""
                         
-                    # CHANGE: don't add global as a param
+                    # CHANGE: don't declare a local var with the same name
                     if (arg["param_name"].strip() not in global_vars.keys()):
                         param_list.append(arg["param_name"] + " ")
                 f.append(",".join(param_list))

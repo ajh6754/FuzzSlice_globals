@@ -4,8 +4,6 @@
 # 
 # @authors Albert Jiro Hynes, Max Milazzo
 
-from srcml import DataType
-
 # global to hold globals per file. dictionary of dictionaries
 # format: {name : type}
 globals = {}

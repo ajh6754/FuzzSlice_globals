@@ -312,7 +312,7 @@ def filter_node_list_by_node_kind(
 
 
 def construct_params(name, file_name, srcmlparams):    
-    # append globals to the srcmlparams, get hte global vars for this file
+    # append globals to the srcmlparams, get the global vars for this file
     global_vars = globals.add_global_params(file_name, srcmlparams)
     
     parameters = []
@@ -503,7 +503,7 @@ class Srcml:
     def nxml(self, nxpath):
         return self.xml.xpath(nxpath, namespaces=ns)
 
-    # future change: This obtains global variables too. 
+    # change: This obtains global variables too. 
     def get_all_defined_functions_and_range(self):
         for file in self.nxml("./src:unit"):
             file_name = file.attrib["filename"]
