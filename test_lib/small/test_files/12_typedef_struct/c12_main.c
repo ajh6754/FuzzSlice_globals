@@ -10,12 +10,12 @@ typedef struct structure {
   int dummy;
 } s;
 
-s test = {10};
+s c12_global_var = {67};
 
 /// ERROR FUNCTION
 int error()
 {
-    if(test.dummy == 10)
+    if(c12_global_var.dummy == 10)
     {
         char input[6] = "Hello";
         char buffer[1];

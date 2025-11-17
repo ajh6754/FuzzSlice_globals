@@ -8,13 +8,13 @@
 
 /// globals
 
-char * global_var = "67";
+char * c08_global_var = "67";
 
 /// MAIN FUNCTION
 
 int main()
 {
-    if(strcmp(global_var, "10") == 0)
+    if(strcmp(c08_global_var, "10") == 0)
     {
         char input[6] = "Hello";
         char buffer[1];

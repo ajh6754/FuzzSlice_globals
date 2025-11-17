@@ -6,6 +6,6 @@ struct structure {
     int dummy;
 };
 
-extern struct structure test;
+extern struct structure c07_global_var;
 
 #endif

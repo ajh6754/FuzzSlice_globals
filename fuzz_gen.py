@@ -56,9 +56,6 @@ class Generator:
         # create dummy type
         declaration = type_name + " " + var_name + ";\n"
         
-        # get globals
-        global_vars = globals.get_globals()
-        
         if(var_name in global_vars.keys() and global_vars[var_name] == type_name):
             declaration = ""
 
@@ -497,7 +494,7 @@ class Generator:
         register_initial_paramnames(file, param_list)
 
     # CHANGE: added "is_global" bool to add the GEN_STRUCT however do not put the var type ANYWHERE
-    def gen_target_function(self, func, param_id, do_global=False) -> list: 
+    def gen_target_function(self, func, param_id) -> list: 
         # get globals
         global_vars = globals.get_globals()
 

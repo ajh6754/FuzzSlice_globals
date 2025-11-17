@@ -9,9 +9,9 @@
 /// MAIN FUNCTION
 
 int main() {
-    extern int global_var_extern;
+    extern int c05_global_var_extern;
 
-    if(global_var_extern == 10)
+    if(c05_global_var_extern == 10)
     {
         char input[6] = "Hello";
         char buffer[1];

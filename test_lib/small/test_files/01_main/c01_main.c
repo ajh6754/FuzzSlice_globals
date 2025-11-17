@@ -8,18 +8,18 @@
 
 /// globals
 
-int global_var = 67;
+int c01_global_var = 67;
 
 /// MAIN FUNCTION
 
 int main()
 {
     int dummy = 0;
-    if(dummy == 0 && global_var == 10)
+    if(dummy == 0 && c01_global_var == 10)
     {
         char input[6] = "Hello";
         char buffer[1];
-        strcpy(buffer, input); /// ./test_lib/small/test_files/main.c:22: High: strcpy
+        strcpy(buffer, input); 
     }
 
     return 0;

@@ -8,12 +8,12 @@
 
 /// globals
 
-int global_var = 67;
+int c02_global_var = 67;
 
 /// ERROR FUNCTION
 int error(int dummy)
 {
-    if(dummy == 0 && global_var == 10)
+    if(dummy == 0 && c02_global_var == 10)
     {
         char input[6] = "Hello";
         char buffer[1];

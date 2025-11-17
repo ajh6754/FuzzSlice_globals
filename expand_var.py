@@ -87,7 +87,7 @@ def add_assignment(file, parameters, vars, types):
     buf_size = []
     free_line = []
     
-    # CHANGE: obtain globals
+    # CHANGE: obtain globals for this file
     global_vars = globals.get_globals()
     
     # text = open( file ).read()

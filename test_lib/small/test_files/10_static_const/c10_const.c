@@ -8,14 +8,14 @@
 
 /// globals
 
-static const int global_var_const = 67;
+static const int c10_global_var_const = 67;
 
 /// MAIN FUNCTION
 
 int main()
 {
     int dummy = 0;
-    if(dummy == 0 && global_var_const == 10)
+    if(dummy == 0 && c10_global_var_const == 10)
     {
         char input[6] = "Hello";
         char buffer[1];

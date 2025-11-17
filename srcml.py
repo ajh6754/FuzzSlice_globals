@@ -312,11 +312,8 @@ def filter_node_list_by_node_kind(
 
 
 def construct_params(name, file_name, srcmlparams):    
-    # append globals to the srcmlparams
-    globals.add_global_params(file_name, srcmlparams)
-    
-    # get globals
-    global_vars = globals.get_globals()
+    # append globals to the srcmlparams, get hte global vars for this file
+    global_vars = globals.add_global_params(file_name, srcmlparams)
     
     parameters = []
     if name == "_original_main":
@@ -550,7 +547,7 @@ class Srcml:
                         # ensure only globals are recorded. Ignore struct declarations
                         # static glboals get ignored
                         if(not is_function and "const" not in ftype
-                            and len(func_name.split(" ")) == 1):
+                            and (len(func_name.split(" ")) == 1 and func_name != "struct ")):
                             
                             # if this is a struct, ensure the entire type is considered
                             # for typedef structs, this messes up- does "struct type"

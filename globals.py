@@ -59,5 +59,8 @@ def add_global_params(filename, srcmlparams):
         
         # add to param_list
         srcmlparams.append(glob_param)
+    
+    # return the relevant globals for this file
+    return file_globals
 
 

@@ -10,12 +10,12 @@ struct structure {
   int dummy;
 };
 
-struct structure test = {10};
+struct structure c06_global_var = {10};
 
 /// ERROR FUNCTION
 int error()
 {
-    if(test.dummy == 10)
+    if(c06_global_var.dummy == 10)
     {
         char input[6] = "Hello";
         char buffer[1];

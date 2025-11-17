@@ -9,9 +9,9 @@
 /// MAIN FUNCTION
 
 int main() {
-    extern const int global_var_extern;
+    extern const int c11_global_var_const_extern;
 
-    if(global_var_extern == 10)
+    if(c11_global_var_const_extern == 10)
     {
         char input[6] = "Hello";
         char buffer[1];

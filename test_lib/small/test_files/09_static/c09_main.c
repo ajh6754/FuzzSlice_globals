@@ -8,13 +8,13 @@
 
 /// globals
 
-static int global_var = 67;
+static int c09_global_var = 67;
 
 /// MAIN FUNCTION
 
 int main()
 {
-    if(global_var == 10)
+    if(c09_global_var == 10)
     {
         char input[6] = "Hello";
         char buffer[1];

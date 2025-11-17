@@ -4,4 +4,4 @@
 
 #include <stdio.h>
 
-const int global_var_extern = 67;   // extern declaration
+const int c11_global_var_const_extern = 67;   // extern declaration

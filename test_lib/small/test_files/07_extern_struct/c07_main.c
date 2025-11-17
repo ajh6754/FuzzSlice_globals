@@ -10,9 +10,9 @@
 /// MAIN FUNCTION
 
 int main() {
-    extern struct structure test;
+    extern struct structure c07_global_var;
 
-    if(test.dummy == 10)
+    if(c07_global_var.dummy == 10)
     {
         char input[6] = "Hello";
         char buffer[1];
