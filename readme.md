@@ -8,6 +8,8 @@ Our implementation allows for the fuzzing of global variables. As of present, th
 
 The instructions for building and running FuzzSlice as normal are pretty much the same. It is highly recommended that you use the newly updated Dockerfile since the old version does not work properly, and cannot download SrcML.
 
+The C test suite was pre-emptively picked out in config.yaml for testing.
+
 # FuzzSlice
 
 [![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/NobleMathews/FuzzSliceICSE/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/NobleMathews/FuzzSliceICSE)
