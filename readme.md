@@ -1,3 +1,13 @@
+# FuzzSlice with Globals
+
+## Note
+
+This is an improvement made to the original FuzzSlice presented in the ICSE 2024. However, we are not the original authors of FuzzSlice.
+
+Our implementation allows for the fuzzing of global variables. As of present, this has been tested with only C files. C++ file functionality needs to be tested.
+
+The instructions for building and running FuzzSlice as normal are pretty much the same. It is highly recommended that you use the newly updated Dockerfile since the old version does not work properly, and cannot download SrcML.
+
 # FuzzSlice
 
 [![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/NobleMathews/FuzzSliceICSE/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/NobleMathews/FuzzSliceICSE)
