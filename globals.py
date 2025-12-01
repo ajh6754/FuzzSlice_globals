@@ -4,8 +4,11 @@
 # 
 # @authors Albert Jiro Hynes, Max Milazzo
 
+# IDEA: TODO globals are actually {name : {"type": type, "file": filename}}, helps determine EXTERN in certain contexts
+
 # global to hold globals per file. dictionary of dictionaries
-# format: {name : type}
+# format: {name : {"type" : type, "file" : filename}}
+
 globals = {}
 
 def get_globals():
@@ -13,10 +16,10 @@ def get_globals():
     """
     return globals
 
-def record_global(name, type):
+def record_global(name, type, filename):
     """records global in the dictionary of dictionaries
     """
-    globals[name] = type
+    globals[name] = {"type": type, "file" : filename.split("/")[-1]}
     return
 
 def add_global_params(filename, srcmlparams):
@@ -37,7 +40,7 @@ def add_global_params(filename, srcmlparams):
         
         # for every global, check that it's in there
         for global_var in globals:
-            glob_string = f"{globals[global_var]} {global_var}"
+            glob_string = f"{globals[global_var]['type']} {global_var}"
             
             if(glob_string in code):
                 file_globals[global_var] = globals[global_var]
@@ -45,7 +48,8 @@ def add_global_params(filename, srcmlparams):
     # append globals to func
     for global_var in file_globals.keys():
         # get important info
-        glob_type = file_globals[global_var]
+        glob_file = file_globals[global_var]["file"]
+        glob_type = file_globals[global_var]["type"]
         
         # create dict for parameters
         glob_param = {
@@ -53,6 +57,7 @@ def add_global_params(filename, srcmlparams):
             "param_name": global_var,
             "param_type": glob_type,
             "function_ptr": 0,
+            "global_file": glob_file
         }
         
         # add to param_list

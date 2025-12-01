@@ -58,7 +58,9 @@ class Generator:
         # create dummy type
         declaration = type_name + " " + var_name + ";\n"
         
-        if(var_name in global_vars.keys() and global_vars[var_name] == type_name):
+        # TODO check if this is even needed but it might be, need the FILENAME
+        if(var_name in global_vars.keys() 
+           and global_vars[var_name]["type"] == type_name):
             declaration = ""
 
         return {
@@ -496,7 +498,7 @@ class Generator:
         register_initial_paramnames(file, param_list)
 
     # CHANGE: added "is_global" bool to add the GEN_STRUCT however do not put the var type ANYWHERE
-    def gen_target_function(self, func, param_id) -> list: 
+    def gen_target_function(self, func, param_id, filename) -> list: 
         # get globals
         global_vars = globals.get_globals()
 
@@ -582,6 +584,7 @@ class Generator:
                     # CHANGE: don't declare a local var with the same name
                     if (arg["param_name"].strip() not in global_vars.keys()):
                         param_list.append(arg["param_name"] + " ")
+                        
                 f.append(",".join(param_list))
                 f.append(");\n")
 
@@ -693,7 +696,7 @@ while (__AFL_LOOP(10000)) {
         if curr_param["function_ptr"] == 1:
             func["params"][param_id]["param_name"] = "NULL"
             param_id += 1
-            return self.gen_target_function(func, param_id)
+            return self.gen_target_function(func, param_id, filename)
 
         if curr_param["generator_type"].value == GEN_BUILTIN:
             if curr_param["param_type"].split(" ")[0] in ["volatile", "const"]:
@@ -836,7 +839,7 @@ while (__AFL_LOOP(10000)) {
             self.gen_free += curr_gen["gen_free"]
 
             param_id += 1
-            return self.gen_target_function(func, param_id)
+            return self.gen_target_function(func, param_id, filename)
 
         if curr_param["generator_type"].value == GEN_STRING:
             if (
@@ -875,7 +878,7 @@ while (__AFL_LOOP(10000)) {
                 self.curr_gen_string = param_id
 
             param_id += 1
-            return self.gen_target_function(func, param_id)
+            return self.gen_target_function(func, param_id, filename)
 
         if curr_param["generator_type"].value == GEN_ENUM:  # GEN_ENUM
             self.gen_this_function = False
@@ -887,7 +890,7 @@ while (__AFL_LOOP(10000)) {
             self.buf_size_arr.append("sizeof(" + curr_param["param_type"] + ")")
 
             param_id += 1
-            return self.gen_target_function(func, param_id)
+            return self.gen_target_function(func, param_id, filename)
 
         if curr_param["generator_type"].value == GEN_ARRAY:  # GEN_ARRAY
             self.gen_this_function = False
@@ -902,7 +905,7 @@ while (__AFL_LOOP(10000)) {
             self.buf_size_arr.append("sizeof(" + curr_param["param_type"] + ")")
 
             param_id += 1
-            return self.gen_target_function(func, param_id)
+            return self.gen_target_function(func, param_id, filename)
 
         if curr_param["generator_type"].value == GEN_VOID:
             self.gen_this_function = False
@@ -920,7 +923,7 @@ while (__AFL_LOOP(10000)) {
             self.buf_size_arr = self.buf_size_arr + add_buf_size
 
             param_id += 1
-            return self.gen_target_function(func, param_id)
+            return self.gen_target_function(func, param_id, filename)
 
         if curr_param["generator_type"].value == GEN_QUALIFIER:
             curr_gen = self.gen_qualifier(
@@ -938,7 +941,7 @@ while (__AFL_LOOP(10000)) {
                 self.buf_size_arr.append(curr_gen["buf_size"])
 
             param_id += 1
-            return self.gen_target_function(func, param_id)
+            return self.gen_target_function(func, param_id, filename)
 
         if curr_param["generator_type"].value == GEN_STRUCT:
             curr_gen = self.gen_struct(
@@ -952,7 +955,7 @@ while (__AFL_LOOP(10000)) {
             self.buf_size_arr.append("sizeof(" + curr_param["param_type"] + ")")
 
             param_id += 1
-            return self.gen_target_function(func, param_id)
+            return self.gen_target_function(func, param_id, filename)
 
         # if curr_param["generator_type"].value == GEN_INCOMPLETE:
         #     # iterate all possible variants for generating
@@ -1023,7 +1026,7 @@ while (__AFL_LOOP(10000)) {
             self.buf_size_arr = self.buf_size_arr + add_buf_size
 
             param_id += 1
-            return self.gen_target_function(func, param_id)
+            return self.gen_target_function(func, param_id, filename)
 
         if curr_param["generator_type"].value == GEN_INCOMPLETE:  # GEN_INCOMPLETE
             add_dyn_size, add_buf_size, curr_gen = self.gen_struct(
@@ -1039,7 +1042,7 @@ while (__AFL_LOOP(10000)) {
             self.buf_size_arr = self.buf_size_arr + add_buf_size
 
             param_id += 1
-            return self.gen_target_function(func, param_id)
+            return self.gen_target_function(func, param_id, filename)
 
         if curr_param["generator_type"].value == GEN_POINTER:
             add_dyn_size, add_buf_size, curr_gen = self.gen_struct(
@@ -1055,4 +1058,4 @@ while (__AFL_LOOP(10000)) {
             self.buf_size_arr = self.buf_size_arr + add_buf_size
 
             param_id += 1
-            return self.gen_target_function(func, param_id)
+            return self.gen_target_function(func, param_id, filename)

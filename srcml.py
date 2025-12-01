@@ -339,17 +339,32 @@ def construct_params(name, file_name, srcmlparams):
         if(srcmlparams[i]["param_name"] in global_vars.keys()):
             is_global = True
         
-        parameters.append(
-            {
-                "parameter": srcmlparams[i]["parameter"].split(";")[0],
-                "param_name": srcmlparams[i]["param_name"],
-                "param_type": srcmlparams[i]["param_type"],
-                "function_ptr": srcmlparams[i]["function_ptr"],
-                "generator_type": DataType.UNKNOWN,
-                "param_usage": "UNKNOWN",
-                "is_global": is_global
-            }
-        )
+        if(is_global):
+            parameters.append(
+                {
+                    "parameter": srcmlparams[i]["parameter"].split(";")[0],
+                    "param_name": srcmlparams[i]["param_name"],
+                    "param_type": srcmlparams[i]["param_type"],
+                    "function_ptr": srcmlparams[i]["function_ptr"],
+                    "generator_type": DataType.UNKNOWN,
+                    "param_usage": "UNKNOWN",
+                    "is_global": is_global,
+                    "global_file": srcmlparams[i]["global_file"]
+                }
+            )
+        else:
+            parameters.append(
+                {
+                    "parameter": srcmlparams[i]["parameter"].split(";")[0],
+                    "param_name": srcmlparams[i]["param_name"],
+                    "param_type": srcmlparams[i]["param_type"],
+                    "function_ptr": srcmlparams[i]["function_ptr"],
+                    "generator_type": DataType.UNKNOWN,
+                    "param_usage": "UNKNOWN",
+                    "is_global": is_global
+                }
+            )
+            
     return parameters
 
 
@@ -545,9 +560,8 @@ class Srcml:
                     if func_name and ftype:
                         # global variables functions, structs, etc get here
                         # ensure only globals are recorded. Ignore struct declarations
-                        # static glboals get ignored
                         if(not is_function and "const" not in ftype
-                            and (len(func_name.split(" ")) == 1 and func_name != "struct ")):
+                            and (len(func_name.split(" ")) == 1 and ftype != "struct ")):
                             
                             # if this is a struct, ensure the entire type is considered
                             # for typedef structs, this messes up- does "struct type"
@@ -555,8 +569,7 @@ class Srcml:
                                 continue
                             
                             # append total globals from globals.py
-                            globals.record_global(func_name, ftype)           
-                            continue
+                            globals.record_global(func_name, ftype, file_name)           
 
                         if self.decl_info[file_name].get(func_name, None):
                             self.decl_info[file_name][func_name] = Function(

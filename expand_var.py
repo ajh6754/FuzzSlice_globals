@@ -93,16 +93,26 @@ def add_assignment(file, parameters, vars, types):
     # text = open( file ).read()
 
     # text = text + "\nint main() { \n"
-    # CHANGE: do not declare globals again
-    if(vars[0] not in global_vars.keys()):
-        for i, v in enumerate(vars):
-            line = "\n \t" + types[i] + " "
-            num_pointers = is_pointer[vars[i]]
-            for j in range(num_pointers):
-                line = line + "*"
-            line = line + vars[i] + ";"
-            # text = text + line
-            lines += [line]
+    # CHANGE: do not declare globals again, UNLESS FROM ANOTHER FILE
+    for i, v in enumerate(vars):
+        local_dec = v not in global_vars.keys()
+        extern_dec = v in global_vars.keys() and global_vars[v]["file"] != file.split("@")[1][1:]
+        
+        if(not (local_dec or extern_dec)):
+            continue
+        
+        # temp type holder
+        extern_or_not = ""
+        if(extern_dec):
+            extern_or_not = "extern "
+            
+        line = "\n \t" + extern_or_not + types[i] + " "
+        num_pointers = is_pointer[vars[i]]
+        for j in range(num_pointers):
+            line = line + "*"
+        line = line + vars[i] + ";"
+        # text = text + line
+        lines += [line]
 
     for i, p in enumerate(parameters):
         parentvar = vars[i]
@@ -776,9 +786,18 @@ def expand_struct(file, parameters, compile_command, link_command):
         types, vars, pointers = get_name(parameters)
         dyn_size, buf_size, lines = add_dummy_parameter(vars, types)
         
+        filename = file.split("@")[1][1:]
+        
         # CHANGE: lines = nothing if global
-        if(vars[0] in global_vars.keys()):
+        if(vars[0] in global_vars.keys() and global_vars[vars[0]]["file"] == filename):
             lines = []
+        elif(vars[0] in global_vars.keys() and global_vars[vars[0]]["file"] != filename):
+            line_to_edit = lines[0].split("\t")
+            line_to_edit[0] += "\textern "
+            lines[0] = line_to_edit[0] + line_to_edit[1]
+            
+            # also make sure the parameter is altered?
+            #parameters
         
         curr_gen = {
             "gen_lines": ["//GEN_STRUCT\n"] + lines,

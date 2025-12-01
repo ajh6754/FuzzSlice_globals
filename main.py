@@ -284,7 +284,9 @@ def add_main(issue, func, concat_locations):
         fd.truncate()
 
     main_gen.reset_globals(func, issue.commands["compile"], issue.commands["link"], f)
-    lines = main_gen.gen_target_function(func, 0)
+    
+    # CHANGE: add filename
+    lines = main_gen.gen_target_function(func, 0, f.split("@")[1][1:])
 
     # Insert new main
     if lines is None:
@@ -319,7 +321,7 @@ def add_temp_main(issue, func):
         fd.truncate()
 
     main_gen.reset_globals(func, [], [], f)
-    lines = main_gen.gen_target_function(func, 0)
+    lines = main_gen.gen_target_function(func, 0, f.split("@")[1][1:])
     if lines is None:
         logger.error("Failed to generate runner main for {}", func["func_name"])
         lines = ["int main(){", "return 0;", "}"]
@@ -385,6 +387,8 @@ def find_defs(missing_file_defs, all_defs, concat_locations):
                         retrieved.add(req)
     missing_defs = set.union(*missing_file_defs.values())
     if len(retrieved) == len(missing_defs):
+        # handle externs here maybe?
+        
         return get_inf
     else:
         logger.error(
