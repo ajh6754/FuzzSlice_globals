@@ -10,6 +10,8 @@ The instructions for building and running FuzzSlice as normal are pretty much th
 
 The C test suite was pre-emptively picked out in config.yaml for testing.
 
+For a more comprehensive review, feel free to download and view the report.docx.
+
 # FuzzSlice
 
 [![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/NobleMathews/FuzzSliceICSE/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/NobleMathews/FuzzSliceICSE)
